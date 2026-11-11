@@ -1,4 +1,5 @@
 import { FormEvent, useState } from "react";
+import { parseProxyLine } from "../parseProxy";
 import {
   loadProxyConfig,
   saveProxyConfig,
@@ -9,6 +10,8 @@ import {
 export default function ProxyPage() {
   const [config, setConfig] = useState<ProxyConfig>(() => loadProxyConfig());
   const [saved, setSaved] = useState(false);
+  const [pasteLine, setPasteLine] = useState("");
+  const [pasteError, setPasteError] = useState<string | null>(null);
 
   function update<K extends keyof ProxyConfig>(key: K, value: ProxyConfig[K]) {
     setConfig((c) => ({ ...c, [key]: value }));
@@ -21,6 +24,17 @@ export default function ProxyPage() {
     setSaved(true);
   }
 
+  function applyPaste() {
+    const parsed = parseProxyLine(pasteLine);
+    if (!parsed) {
+      setPasteError("Use user:pass@host:port");
+      return;
+    }
+    setPasteError(null);
+    setConfig((c) => ({ ...c, ...parsed }));
+    setSaved(false);
+  }
+
   return (
     <div className="stack">
       <section className="card">
@@ -29,6 +43,22 @@ export default function ProxyPage() {
           Enter the HTTP or HTTPS proxy you want PSN traffic to use. On iPhone, these same values
           go into Wi‑Fi → Configure Proxy → Manual.
         </p>
+
+        <div className="paste-box">
+          <h3>Paste proxy line</h3>
+          <p className="muted">Format: <code>user:pass@host:port</code> (hProxy / ISP rotating)</p>
+          <input
+            type="text"
+            autoComplete="off"
+            placeholder="user:pass@isp-rotating.hproxy.com:30"
+            value={pasteLine}
+            onChange={(e) => setPasteLine(e.target.value)}
+          />
+          <button type="button" className="btn secondary" onClick={applyPaste}>
+            Fill fields from paste
+          </button>
+          {pasteError ? <p className="warn">{pasteError}</p> : null}
+        </div>
 
         <form className="form" onSubmit={onSubmit}>
           <label className="switch-row">

@@ -84,6 +84,15 @@ export default function GuidePage() {
               Copy username
             </button>
           ) : null}
+          {proxy.password ? (
+            <button
+              type="button"
+              className="btn secondary"
+              onClick={() => onCopy("password", proxy.password)}
+            >
+              Copy password
+            </button>
+          ) : null}
         </div>
         {copied ? <p className="ok banner">Copied {copied}.</p> : null}
       </section>
