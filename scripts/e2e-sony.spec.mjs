@@ -24,10 +24,11 @@ async function run() {
   assert.equal(popup, null, "must not open new tab");
 
   await page.waitForURL(/my\.account\.sony\.com.*sonyacct/, { timeout: 90000 });
+  await page.getByText(/Sign in to PlayStation|Sign-In ID/i).first().waitFor({ timeout: 60000 });
   const url = page.url();
   assert.match(url, /service_entity=psn|sonyacct/, `expected PSN oauth, got ${url}`);
 
-  const body = await page.locator("body").innerText({ timeout: 60000 });
+  const body = await page.locator("body").innerText();
   assert.match(body, /sign in to playstation|sign-in id/i, "consumer PSN form");
   assert.doesNotMatch(body, /sign in to access your apps/i, "must not be Partners portal");
   assert.doesNotMatch(body, /something went wrong/i);
