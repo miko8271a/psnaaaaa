@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { loadProxyConfig, proxySummary } from "../proxyStorage";
 
-const SONY_SIGN_IN = "https://signin.playstation.net/signin/";
 
 export default function HomePage() {
   const proxy = loadProxyConfig();
@@ -49,14 +48,9 @@ export default function HomePage() {
         </ol>
       </section>
 
-      <a
-        className="btn primary"
-        href={SONY_SIGN_IN}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Open Sony sign-in (Safari)
-      </a>
+      <Link to="/sony" className="btn primary">
+        Open Sony sign-in in app
+      </Link>
 
       <p className="fine-print">
         Uses signin.playstation.net (not my.account.sony.com — that URL often errors on phones).

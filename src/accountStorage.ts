@@ -21,8 +21,8 @@ export function saveAccounts(accounts: SavedAccount[]): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(accounts));
 }
 
-import { SONY_URLS } from "./openSony";
+import { SONY_SIGN_IN_URL } from "./openSony";
 
 export function sonySignInUrl(): string {
-  return SONY_URLS[0];
+  return SONY_SIGN_IN_URL;
 }

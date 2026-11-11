@@ -5,7 +5,7 @@ import {
   saveAccounts,
   type SavedAccount,
 } from "../accountStorage";
-import { openSonySignIn, probeSonyReachability, SONY_SIGN_IN_URL } from "../openSony";
+import { probeSonyReachability, SONY_IN_APP_PATH, SONY_SIGN_IN_URL } from "../openSony";
 import { loadProxyConfig, proxySummary } from "../proxyStorage";
 
 const IP_CHECK = "https://api.ipify.org?format=json";
@@ -72,11 +72,8 @@ export default function LoginPage() {
         <p className="muted">
           Opens an in-app full-screen login page — you are not thrown out to Safari.
         </p>
-        <button type="button" className="btn primary large" onClick={openSonySignIn}>
+        <Link to={SONY_IN_APP_PATH} className="btn primary large">
           Open Sony login in app
-        </button>
-        <Link to="/sony" className="btn secondary">
-          Or use Login screen tab
         </Link>
       </section>
 
@@ -126,13 +123,9 @@ export default function LoginPage() {
         <ul className="account-list">
           {accounts.map((a) => (
             <li key={a.id}>
-              <button
-                type="button"
-                className="btn primary account-btn"
-                onClick={openSonySignIn}
-              >
+              <Link to={SONY_IN_APP_PATH} className="btn primary account-btn">
                 {a.email}
-              </button>
+              </Link>
               <button
                 type="button"
                 className="btn ghost"
