@@ -49,8 +49,13 @@ export default function HomePage() {
         </ol>
       </section>
 
-      <a className="btn primary" href={SONY_SIGN_IN} target="_blank" rel="noopener noreferrer">
-        Open Sony sign-in
+      <a
+        className="btn primary"
+        href={SONY_SIGN_IN}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Open Sony sign-in (Safari)
       </a>
 
       <p className="fine-print">

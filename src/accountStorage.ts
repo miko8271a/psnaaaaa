@@ -21,8 +21,9 @@ export function saveAccounts(accounts: SavedAccount[]): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(accounts));
 }
 
-export function sonySignInUrl(email: string): string {
-  const base = new URL("https://my.account.sony.com/sonyacct/signin/");
-  base.searchParams.set("login_hint", email.trim());
-  return base.toString();
+const SONY_SIGN_IN = "https://my.account.sony.com/sonyacct/signin/";
+
+/** Plain Sony URL — extra params often trigger Sony's generic error page. */
+export function sonySignInUrl(_email?: string): string {
+  return SONY_SIGN_IN;
 }

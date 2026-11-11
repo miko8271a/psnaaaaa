@@ -98,8 +98,13 @@ export default function LoginPage() {
         <ul className="account-list">
           {accounts.map((a) => (
             <li key={a.id}>
-              <a className="btn primary account-btn" href={sonySignInUrl(a.email)}>
-                {a.email}
+              <a
+                className="btn primary account-btn"
+                href={sonySignInUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {a.email} — open Sony
               </a>
               <button
                 type="button"
