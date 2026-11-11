@@ -362,3 +362,41 @@ body {
   color: var(--muted);
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
+
+.sony-embed {
+  display: flex;
+  flex-direction: column;
+  min-height: 70dvh;
+  gap: 8px;
+}
+
+.sony-embed-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.back-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.sony-frame {
+  flex: 1;
+  width: 100%;
+  min-height: 55dvh;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.in-embed {
+  margin: 0;
+}
+
+.small-link {
+  font-size: 0.85rem;
+  padding: 10px;
+}

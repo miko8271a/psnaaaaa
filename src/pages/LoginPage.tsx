@@ -5,12 +5,7 @@ import {
   saveAccounts,
   type SavedAccount,
 } from "../accountStorage";
-import {
-  isStandalonePwa,
-  openSonySignIn,
-  probeSonyReachability,
-  SONY_URLS,
-} from "../openSony";
+import { openSonySignIn, probeSonyReachability, SONY_SIGN_IN_URL } from "../openSony";
 import { loadProxyConfig, proxySummary } from "../proxyStorage";
 
 const IP_CHECK = "https://api.ipify.org?format=json";
@@ -29,9 +24,6 @@ export default function LoginPage() {
   const [probes, setProbes] = useState<
     Awaited<ReturnType<typeof probeSonyReachability>> | null
   >(null);
-  const [autoSeconds, setAutoSeconds] = useState(4);
-  const [autoCancelled, setAutoCancelled] = useState(false);
-  const standalone = isStandalonePwa();
 
   const proxyReady = proxy.enabled && proxy.host && proxy.port;
 
@@ -53,16 +45,6 @@ export default function LoginPage() {
     void checkIp();
     void probeSonyReachability().then(setProbes);
   }, []);
-
-  useEffect(() => {
-    if (autoCancelled) return;
-    if (autoSeconds <= 0) {
-      openSonySignIn(SONY_URLS[0]);
-      return;
-    }
-    const t = window.setTimeout(() => setAutoSeconds((s) => s - 1), 1000);
-    return () => window.clearTimeout(t);
-  }, [autoSeconds, autoCancelled]);
 
   function addAccount(e: FormEvent) {
     e.preventDefault();
@@ -86,37 +68,16 @@ export default function LoginPage() {
   return (
     <div className="stack">
       <section className="card">
-        <h2>Sign-in launcher</h2>
-        {!autoCancelled && autoSeconds > 0 ? (
-          <p className="ok banner">
-            Opening Sony in {standalone ? "Safari" : "browser"} in {autoSeconds}s…
-            <button
-              type="button"
-              className="btn ghost"
-              onClick={() => setAutoCancelled(true)}
-            >
-              Cancel
-            </button>
-          </p>
-        ) : null}
-        {standalone ? (
-          <p className="warn banner">
-            Home-screen mode breaks Sony login. This app sends you to{" "}
-            <strong>Safari</strong> automatically.
-          </p>
-        ) : null}
-        <button
-          type="button"
-          className="btn primary large"
-          onClick={() => openSonySignIn(SONY_URLS[0])}
-        >
-          Open Sony sign-in now
-        </button>
-        <p className="fine-print">
-          Do not use my.account.sony.com on iPhone — it often crashes with
-          &quot;Something went wrong&quot; (Sony bot scripts). This app only opens
-          signin.playstation.net.
+        <h2>Sign in (inside this app)</h2>
+        <p className="muted">
+          Opens an in-app full-screen login page — you are not thrown out to Safari.
         </p>
+        <button type="button" className="btn primary large" onClick={openSonySignIn}>
+          Open Sony login in app
+        </button>
+        <Link to="/sony" className="btn secondary">
+          Or use Login screen tab
+        </Link>
       </section>
 
       <section className="card">
@@ -136,7 +97,7 @@ export default function LoginPage() {
         <ul className="copy-list">
           {probes?.map((p) => (
             <li key={p.url}>
-              {p.ok ? "✓" : "✗"} {p.detail} — {p.url}
+              {p.ok ? "✓" : "✗"} {p.detail}
             </li>
           ))}
         </ul>
@@ -149,7 +110,7 @@ export default function LoginPage() {
       </section>
 
       <section className="card">
-        <h3>Saved emails (tap opens Sony)</h3>
+        <h3>Saved emails</h3>
         <form className="form inline-add" onSubmit={addAccount}>
           <input
             type="email"
@@ -168,7 +129,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 className="btn primary account-btn"
-                onClick={() => openSonySignIn(SONY_URLS[0])}
+                onClick={openSonySignIn}
               >
                 {a.email}
               </button>
@@ -176,13 +137,13 @@ export default function LoginPage() {
                 type="button"
                 className="btn ghost"
                 onClick={() => removeAccount(a.id)}
-                aria-label="Remove"
               >
                 Remove
               </button>
             </li>
           ))}
         </ul>
+        <p className="fine-print">Sony URL: {SONY_SIGN_IN_URL}</p>
       </section>
     </div>
   );

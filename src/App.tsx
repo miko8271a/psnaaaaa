@@ -3,6 +3,7 @@ import HomePage from "./pages/HomePage";
 import ProxyPage from "./pages/ProxyPage";
 import GuidePage from "./pages/GuidePage";
 import LoginPage from "./pages/LoginPage";
+import SonyEmbedPage from "./pages/SonyEmbedPage";
 
 const navClass = ({ isActive }: { isActive: boolean }) =>
   isActive ? "tab tab-active" : "tab";
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="/proxy" element={<ProxyPage />} />
           <Route path="/guide" element={<GuidePage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/sony" element={<SonyEmbedPage />} />
         </Routes>
       </main>
 
