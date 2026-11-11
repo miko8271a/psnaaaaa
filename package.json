@@ -7,7 +7,8 @@
     "dev": "vite --host 127.0.0.1 --port 5173",
     "build": "tsc -p tsconfig.app.json && vite build && npm run build:pages",
     "build:pages": "rm -rf docs && cp -r dist docs && touch docs/.nojekyll",
-    "preview": "vite preview --host 127.0.0.1 --port 5173"
+    "preview": "vite preview --host 127.0.0.1 --port 5173",
+    "test:e2e": "node scripts/e2e-sony.spec.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",
