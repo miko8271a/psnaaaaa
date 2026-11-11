@@ -11,9 +11,9 @@ export default function HomePage() {
       <section className="card hero-card">
         <h2>Sign in to PSN through your proxy</h2>
         <p>
-          This helper is built for iPhone: you save your proxy details here, apply them in iOS
-          Wi‑Fi settings, then open Sony&apos;s official sign-in page. Traffic uses your proxy
-          once Wi‑Fi proxy is on.
+          <strong>Do not use Add to Home Screen</strong> for login — iPhone sends Sony to a new
+          Safari. Use a <strong>Safari bookmark</strong> or the <strong>Capacitor iOS app</strong> in
+          this repo.
         </p>
       </section>
 

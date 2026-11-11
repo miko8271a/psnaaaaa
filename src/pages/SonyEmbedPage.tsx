@@ -1,33 +1,60 @@
 import { useNavigate } from "react-router-dom";
+import { isIosHomeScreenWebApp, isNativeShell } from "../capacitor";
 import { SONY_SIGN_IN_URL } from "../openSony";
 
 export default function SonyEmbedPage() {
   const navigate = useNavigate();
+  const homeScreenWeb = isIosHomeScreenWebApp();
+  const native = isNativeShell();
 
-  function openInThisApp() {
-    // Sony blocks iframes (verified with Playwright). Same tab = same home-screen app, not a new Safari.
-    window.location.assign(SONY_SIGN_IN_URL);
+  function openLogin() {
+    window.location.href = SONY_SIGN_IN_URL;
   }
 
   return (
     <div className="stack">
       <section className="card">
         <h2>PSN login</h2>
-        <p className="muted">
-          Sony does not allow login inside a small frame (it stays blank on iPhone). Login opens
-          full-screen in <strong>this same app window</strong> — not a separate Safari app.
-        </p>
-        <button type="button" className="btn primary large" onClick={openInThisApp}>
+
+        {homeScreenWeb && !native ? (
+          <p className="warn banner">
+            iPhone <strong>web icons</strong> always throw Sony into a <strong>new Safari</strong>.
+            Apple does not allow Sony login inside that icon. Use the <strong>real iOS app</strong>{" "}
+            (Xcode / Capacitor in repo) or open this site as a <strong>Safari tab</strong> instead
+            of Add to Home Screen.
+          </p>
+        ) : (
+          <p className="muted">
+            {native
+              ? "Native app: login stays inside this app."
+              : "Opens PlayStation login in this browser tab."}
+          </p>
+        )}
+
+        <button type="button" className="btn primary large" onClick={openLogin}>
           Continue to PlayStation login
         </button>
         <button type="button" className="btn secondary" onClick={() => navigate("/login")}>
           ← Back
         </button>
       </section>
-      <p className="fine-print">
-        After sign-in, open the <strong>PSN Proxy Login</strong> icon again for proxy settings.
-        Do not tap links that open a new tab.
-      </p>
+
+      {homeScreenWeb ? (
+        <section className="card note">
+          <h3>Stay in one app (fix)</h3>
+          <ol>
+            <li>Delete the Home Screen icon.</li>
+            <li>
+              In <strong>Safari</strong>, open{" "}
+              <strong>https://miko8271a.github.io/psnaaaaa/</strong>
+            </li>
+            <li>
+              <strong>Share → Add to Bookmark</strong> (not Home Screen), or build{" "}
+              <strong>ios-app</strong> in Xcode.
+            </li>
+          </ol>
+        </section>
+      ) : null}
     </div>
   );
 }
