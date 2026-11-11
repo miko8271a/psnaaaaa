@@ -1,6 +1,6 @@
 import SwiftUI
 
-private let sonySignInURL = URL(string: "https://my.account.sony.com/sonyacct/signin/")!
+private let sonySignInURL = URL(string: "https://signin.playstation.net/signin/")!
 
 struct ContentView: View {
     @State private var showSignIn = false

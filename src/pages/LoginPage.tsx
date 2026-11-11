@@ -112,13 +112,11 @@ export default function LoginPage() {
         >
           Open Sony sign-in now
         </button>
-        <button
-          type="button"
-          className="btn secondary"
-          onClick={() => openSonySignIn(SONY_URLS[1])}
-        >
-          Alternate Sony URL
-        </button>
+        <p className="fine-print">
+          Do not use my.account.sony.com on iPhone — it often crashes with
+          &quot;Something went wrong&quot; (Sony bot scripts). This app only opens
+          signin.playstation.net.
+        </p>
       </section>
 
       <section className="card">

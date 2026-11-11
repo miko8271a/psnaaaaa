@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { loadProxyConfig, proxySummary } from "../proxyStorage";
 
-const SONY_SIGN_IN = "https://my.account.sony.com/sonyacct/signin/";
+const SONY_SIGN_IN = "https://signin.playstation.net/signin/";
 
 export default function HomePage() {
   const proxy = loadProxyConfig();
@@ -59,8 +59,7 @@ export default function HomePage() {
       </a>
 
       <p className="fine-print">
-        Uses Sony&apos;s official login at my.account.sony.com. Your password is only entered on
-        Sony&apos;s site — never in this app.
+        Uses signin.playstation.net (not my.account.sony.com — that URL often errors on phones).
       </p>
     </div>
   );
