@@ -5,7 +5,7 @@ import {
   saveAccounts,
   type SavedAccount,
 } from "../accountStorage";
-import { probeSonyReachability, SONY_IN_APP_PATH, SONY_SIGN_IN_URL } from "../openSony";
+import { probeSonyReachability, SONY_IN_APP_PATH } from "../openSony";
 import { loadProxyConfig, proxySummary } from "../proxyStorage";
 
 const IP_CHECK = "https://api.ipify.org?format=json";
@@ -136,7 +136,9 @@ export default function LoginPage() {
             </li>
           ))}
         </ul>
-        <p className="fine-print">Sony URL: {SONY_SIGN_IN_URL}</p>
+        <p className="fine-print">
+          Uses <strong>consumer PSN</strong> login, not Partners (signin.playstation.net).
+        </p>
       </section>
     </div>
   );
