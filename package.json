@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 5173",
-    "build": "tsc -p tsconfig.app.json && vite build",
+    "build": "tsc -p tsconfig.app.json && vite build && npm run build:pages",
+    "build:pages": "rm -rf docs && cp -r dist docs && touch docs/.nojekyll",
     "preview": "vite preview --host 127.0.0.1 --port 5173"
   },
   "dependencies": {
