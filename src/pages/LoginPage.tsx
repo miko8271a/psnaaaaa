@@ -3,9 +3,14 @@ import { Link } from "react-router-dom";
 import {
   loadAccounts,
   saveAccounts,
-  sonySignInUrl,
   type SavedAccount,
 } from "../accountStorage";
+import {
+  isStandalonePwa,
+  openSonySignIn,
+  probeSonyReachability,
+  SONY_URLS,
+} from "../openSony";
 import { loadProxyConfig, proxySummary } from "../proxyStorage";
 
 const IP_CHECK = "https://api.ipify.org?format=json";
@@ -21,6 +26,12 @@ export default function LoginPage() {
   const [checking, setChecking] = useState(false);
   const [accounts, setAccounts] = useState<SavedAccount[]>(() => loadAccounts());
   const [newEmail, setNewEmail] = useState("");
+  const [probes, setProbes] = useState<
+    Awaited<ReturnType<typeof probeSonyReachability>> | null
+  >(null);
+  const [autoSeconds, setAutoSeconds] = useState(4);
+  const [autoCancelled, setAutoCancelled] = useState(false);
+  const standalone = isStandalonePwa();
 
   const proxyReady = proxy.enabled && proxy.host && proxy.port;
 
@@ -40,7 +51,18 @@ export default function LoginPage() {
 
   useEffect(() => {
     void checkIp();
+    void probeSonyReachability().then(setProbes);
   }, []);
+
+  useEffect(() => {
+    if (autoCancelled) return;
+    if (autoSeconds <= 0) {
+      openSonySignIn(SONY_URLS[0]);
+      return;
+    }
+    const t = window.setTimeout(() => setAutoSeconds((s) => s - 1), 1000);
+    return () => window.clearTimeout(t);
+  }, [autoSeconds, autoCancelled]);
 
   function addAccount(e: FormEvent) {
     e.preventDefault();
@@ -64,25 +86,72 @@ export default function LoginPage() {
   return (
     <div className="stack">
       <section className="card">
-        <h2>PSN sign-in</h2>
-        <p>
-          Proxy: <strong>{proxySummary(proxy)}</strong>
-        </p>
-        {!proxyReady ? (
+        <h2>Sign-in launcher</h2>
+        {!autoCancelled && autoSeconds > 0 ? (
+          <p className="ok banner">
+            Opening Sony in {standalone ? "Safari" : "browser"} in {autoSeconds}s…
+            <button
+              type="button"
+              className="btn ghost"
+              onClick={() => setAutoCancelled(true)}
+            >
+              Cancel
+            </button>
+          </p>
+        ) : null}
+        {standalone ? (
           <p className="warn banner">
-            Set proxy in <Link to="/proxy">Proxy</Link>, then Wi‑Fi steps in{" "}
-            <Link to="/guide">iOS setup</Link>.
+            Home-screen mode breaks Sony login. This app sends you to{" "}
+            <strong>Safari</strong> automatically.
           </p>
-        ) : (
-          <p className="muted">
-            Wi‑Fi proxy on, then pick an account — Sony opens with your email filled. You enter
-            password on Sony&apos;s site (CAPTCHA / 2FA there).
-          </p>
-        )}
+        ) : null}
+        <button
+          type="button"
+          className="btn primary large"
+          onClick={() => openSonySignIn(SONY_URLS[0])}
+        >
+          Open Sony sign-in now
+        </button>
+        <button
+          type="button"
+          className="btn secondary"
+          onClick={() => openSonySignIn(SONY_URLS[1])}
+        >
+          Alternate Sony URL
+        </button>
       </section>
 
       <section className="card">
-        <h3>Your accounts (this phone only)</h3>
+        <h3>Auto checks</h3>
+        <p>
+          Proxy: <strong>{proxySummary(proxy)}</strong>
+        </p>
+        {ip ? (
+          <p className="ip-display">
+            Public IP: <code>{ip}</code>
+          </p>
+        ) : null}
+        {ipError ? <p className="warn">{ipError}</p> : null}
+        <button type="button" className="btn secondary" disabled={checking} onClick={checkIp}>
+          Refresh IP
+        </button>
+        <ul className="copy-list">
+          {probes?.map((p) => (
+            <li key={p.url}>
+              {p.ok ? "✓" : "✗"} {p.detail} — {p.url}
+            </li>
+          ))}
+        </ul>
+        {!proxyReady ? (
+          <p className="muted">
+            Optional: <Link to="/proxy">Proxy</Link> +{" "}
+            <Link to="/guide">Wi‑Fi setup</Link>.
+          </p>
+        ) : null}
+      </section>
+
+      <section className="card">
+        <h3>Saved emails (tap opens Sony)</h3>
         <form className="form inline-add" onSubmit={addAccount}>
           <input
             type="email"
@@ -98,14 +167,13 @@ export default function LoginPage() {
         <ul className="account-list">
           {accounts.map((a) => (
             <li key={a.id}>
-              <a
+              <button
+                type="button"
                 className="btn primary account-btn"
-                href={sonySignInUrl()}
-                target="_blank"
-                rel="noopener noreferrer"
+                onClick={() => openSonySignIn(SONY_URLS[0])}
               >
-                {a.email} — open Sony
-              </a>
+                {a.email}
+              </button>
               <button
                 type="button"
                 className="btn ghost"
@@ -117,22 +185,6 @@ export default function LoginPage() {
             </li>
           ))}
         </ul>
-        {accounts.length === 0 ? (
-          <p className="muted">Add each email you use for PSN — tap to sign in.</p>
-        ) : null}
-      </section>
-
-      <section className="card">
-        <h3>Connection check</h3>
-        {ip ? (
-          <p className="ip-display">
-            Public IP: <code>{ip}</code>
-          </p>
-        ) : null}
-        {ipError ? <p className="warn">{ipError}</p> : null}
-        <button type="button" className="btn secondary" disabled={checking} onClick={checkIp}>
-          {checking ? "Checking…" : "Refresh IP"}
-        </button>
       </section>
     </div>
   );
