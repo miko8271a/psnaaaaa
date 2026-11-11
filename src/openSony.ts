@@ -3,8 +3,10 @@ export const SONY_SIGN_IN_URL = "https://signin.playstation.net/signin/";
 export const SONY_URLS = [SONY_SIGN_IN_URL] as const;
 
 /** Stay in the same browser / PWA — no forced Safari handoff. */
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+
 export function openSonySignIn(): void {
-  window.location.assign("/psnaaaaa/sony");
+  window.location.assign(`${base}sony`);
 }
 
 export async function probeSonyReachability(): Promise<
